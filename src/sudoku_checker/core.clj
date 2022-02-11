@@ -13,18 +13,22 @@
    (range size)))
 
 
+(defn- window
+  [line idx size]
+  (->> line
+       (drop (* idx size))
+       (take size)))
+
+
 (defn- build-boxes
   [rows size]
   (for [x (range size)
         y (range size)]
-    (let [lines (->> rows
-                     (drop (* x size))
-                     (take size))
-          fnx (fn [line]
-                (take size (drop (* y size) line)))]
-      (->> lines
-           (map fnx)
-           flatten))))
+    (->> rows
+         (drop (* x size))
+         (take size)
+         (map #(window % y size))
+         flatten)))
 
 
 (defn- parse
