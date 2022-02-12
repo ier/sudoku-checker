@@ -69,9 +69,10 @@
 (defn -main
   [& args]
   (if (seq args)
-    (let [correct? (->> args first check)
+    (let [correct? (->> args first slurp check)
           output (if correct?
                    "Correct sudoku input"
                    "Incorrect sudoku input")]
       (prn output))
-    (prn "Usage: java -jar sudoku-checker.jar \"81 digits from 1 to 9 separeated by space\"")))
+    (prn "Usage: java -jar target/uberjar/sudoku-checker-0.1.0-SNAPSHOT-standalone.jar doc/sudoku-solution-example.txt")))
+
