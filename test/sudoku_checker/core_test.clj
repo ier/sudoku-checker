@@ -3,11 +3,15 @@
             [sudoku-checker.core :refer [check]]))
 
 
+(def correct-input "1 2 3 4 5 6 7 8 9\n4 5 6 7 8 9 1 2 3\n7 8 9 1 2 3 4 5 6\n2 3 4 5 6 7 8 9 1\n5 6 7 8 9 1 2 3 4\n8 9 1 2 3 4 5 6 7\n3 4 5 6 7 8 9 1 2\n6 7 8 9 1 2 3 4 5\n9 1 2 3 4 5 6 7 8")
+
+(def incorrect-input "2 2 3 4 5 6 7 8 9\n4 5 6 7 8 9 1 2 3\n7 8 9 1 2 3 4 5 6\n2 3 4 5 6 7 8 9 1\n5 6 7 8 9 1 2 3 4\n8 9 1 2 3 4 5 6 7\n3 4 5 6 7 8 9 1 2\n6 7 8 9 1 2 3 4 5\n9 1 2 3 4 5 6 7 8")
+
+
 (deftest input-test
   (testing "parse"
-    (let [input "1 2 3 4 5 6 7 8 9\n4 5 6 7 8 9 1 2 3\n7 8 9 1 2 3 4 5 6\n2 3 4 5 6 7 8 9 1\n5 6 7 8 9 1 2 3 4\n8 9 1 2 3 4 5 6 7\n3 4 5 6 7 8 9 1 2\n6 7 8 9 1 2 3 4 5\n9 1 2 3 4 5 6 7 8"
-          box-side-size 3
-          result (#'sudoku-checker.core/parse input box-side-size)]
+    (let [box-side-size 3
+          result (#'sudoku-checker.core/parse correct-input box-side-size)]
       (is (= [[1 2 3 4 5 6 7 8 9]
               [4 5 6 7 8 9 1 2 3]
               [7 8 9 1 2 3 4 5 6]
@@ -42,8 +46,5 @@
              (:boxes result)))))
 
   (testing "check"
-    (let [correct-input "1 2 3 4 5 6 7 8 9\n4 5 6 7 8 9 1 2 3\n7 8 9 1 2 3 4 5 6\n2 3 4 5 6 7 8 9 1\n5 6 7 8 9 1 2 3 4\n8 9 1 2 3 4 5 6 7\n3 4 5 6 7 8 9 1 2\n6 7 8 9 1 2 3 4 5\n9 1 2 3 4 5 6 7 8"]
-      (is (check correct-input)))
-    
-    (let [incorrect-input "2 2 3 4 5 6 7 8 9\n4 5 6 7 8 9 1 2 3\n7 8 9 1 2 3 4 5 6\n2 3 4 5 6 7 8 9 1\n5 6 7 8 9 1 2 3 4\n8 9 1 2 3 4 5 6 7\n3 4 5 6 7 8 9 1 2\n6 7 8 9 1 2 3 4 5\n9 1 2 3 4 5 6 7 8"]
-      (is (not (check incorrect-input))))))
+    (is (check correct-input))
+    (is (not (check incorrect-input)))))
