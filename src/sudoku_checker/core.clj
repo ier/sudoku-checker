@@ -31,17 +31,22 @@
          flatten)))
 
 
+(defn- build-rows
+  [numbers line-size]
+  (->> numbers
+       (map #(Integer/parseInt %))
+       (partition line-size)
+       (map vec)
+       vec))
+
+
 (defn- parse
   [s box-side-size]
   (let [line-size (* box-side-size box-side-size)
-        numbers (-> s
-                    (str/replace #"\n" " ")
-                    (str/split #" "))
-        rows (->> numbers
-                  (map #(Integer/parseInt %))
-                  (partition line-size)
-                  (map vec)
-                  vec)
+        rows (-> s
+                 (str/replace #"\n" " ")
+                 (str/split #" ")
+                 (build-rows line-size))
         cols (build-cols rows line-size)
         boxes (build-boxes rows box-side-size)]
     {:rows rows
@@ -75,4 +80,3 @@
                    "Incorrect sudoku input")]
       (prn output))
     (prn "Usage: java -jar target/uberjar/sudoku-checker-0.1.0-SNAPSHOT-standalone.jar doc/sudoku-solution-example.txt")))
-
