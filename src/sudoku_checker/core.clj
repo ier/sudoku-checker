@@ -1,7 +1,8 @@
 (ns sudoku-checker.core
   (:require
    [clojure.string :as str]
-   [clojure.set :as set])
+   [clojure.set :as set]
+   [clojure.java.io :as io])
   (:gen-class))
 
 
@@ -71,12 +72,20 @@
      [rows cols boxes])))
 
 
+(defn- valid-input-size?
+  [filename]
+  (let [length (.length (io/file filename))]
+    (<= length 161)))
+
+
 (defn -main
   [& args]
   (if (seq args)
-    (let [correct? (->> args first slurp check)
-          output (if correct?
-                   "Correct sudoku input"
-                   "Incorrect sudoku input")]
-      (prn output))
+    (if (valid-input-size? (first args))
+      (let [correct? (->> args first slurp check)
+            output (if correct?
+                     "Correct sudoku input"
+                     "Incorrect sudoku input")]
+        (prn output))
+      (prn "File content should have only 81 digits separeted with space."))
     (prn "Usage: java -jar target/uberjar/sudoku-checker-0.1.0-SNAPSHOT-standalone.jar doc/sudoku-solution-example.txt")))
