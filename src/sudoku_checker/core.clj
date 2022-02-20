@@ -78,14 +78,23 @@
     (<= length 161)))
 
 
+(defn- valid-values?
+  [s]
+  (every? (fn [x]
+            (and (Character/isDigit x)
+                 (not= (char x) \0)))
+          s))
+
+
 (defn -main
   [& args]
   (if (seq args)
-    (if (valid-input-size? (first args))
+    (if (and (valid-input-size? (first args))
+             (valid-values? (first args)))
       (let [correct? (->> args first slurp check)
             output (if correct?
                      "Correct sudoku input"
                      "Incorrect sudoku input")]
         (prn output))
-      (prn "File content should have only 81 digits separeted with space."))
+      (prn "File content should have only 81 digits from 1 to 9 separeted with space."))
     (prn "Usage: java -jar target/uberjar/sudoku-checker-0.1.0-SNAPSHOT-standalone.jar doc/sudoku-solution-example.txt")))
