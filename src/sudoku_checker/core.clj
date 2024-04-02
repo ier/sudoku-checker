@@ -1,10 +1,9 @@
 (ns sudoku-checker.core
   (:require
-   [clojure.string :as str]
+   [clojure.java.io :as io]
    [clojure.set :as set]
-   [clojure.java.io :as io])
+   [clojure.string :as str])
   (:gen-class))
-
 
 (defn- build-cols
   [rows size]
@@ -13,13 +12,11 @@
      (mapv #(nth % pos) rows))
    (range size)))
 
-
 (defn- window
   [line idx size]
   (->> line
        (drop (* idx size))
        (take size)))
-
 
 (defn- build-boxes
   [rows size]
@@ -31,7 +28,6 @@
          (map #(window % y size))
          flatten)))
 
-
 (defn- build-rows
   [numbers line-size]
   (->> numbers
@@ -40,27 +36,22 @@
        (map vec)
        vec))
 
-
 (defn- parse
   [s box-side-size]
   (let [line-size (* box-side-size box-side-size)
         rows (-> s
                  (str/replace #"\n" " ")
                  (str/split #" ")
-                 (build-rows line-size))
-        cols (build-cols rows line-size)
-        boxes (build-boxes rows box-side-size)]
+                 (build-rows line-size))]
     {:rows rows
-     :cols cols
-     :boxes boxes}))
-
+     :cols (build-cols rows line-size)
+     :boxes (build-boxes rows box-side-size)}))
 
 (defn- validate
   [rows etalon]
   (and
    (every? #(= (count etalon) (count %)) (map set rows))
    (every? empty? (map #(set/difference (set %) etalon) rows))))
-
 
 (defn check
   [s]
@@ -71,20 +62,17 @@
      #(validate % (set (range 1 (inc line-size))))
      [rows cols boxes])))
 
-
 (defn- valid-input-size?
   [filename]
-  (let [length (.length (io/file filename))]
-    (<= length 161)))
-
+  (<= (->> filename io/file .length) 161))
 
 (defn- valid-values?
   [s]
-  (every? (fn [x]
-            (and (Character/isDigit x)
-                 (not= (char x) \0)))
-          s))
-
+  (every?
+   (fn [x]
+     (and (Character/isDigit x)
+          (not= (char x) \0)))
+   s))
 
 (defn -main
   [& args]
